@@ -1,8 +1,8 @@
-package br.com.redes2.actions;
+package br.com.chatsocket.actions;
 
-import br.com.redes2.sockets.ClientChat;
-import br.com.redes2.sockets.ReaderWriter;
-import br.com.redes2.swing.AppClient;
+import br.com.chatsocket.sockets.ClientChat;
+import br.com.chatsocket.sockets.ReaderWriter;
+import br.com.chatsocket.swing.AppClient;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,7 +18,12 @@ public class ActionConect implements ActionListener {
     try {
       AppClient.btnConetar.setEnabled(false);
       AppClient.txtNome.setEditable(false);
+      AppClient.btnEnviar.setEnabled(true);
+      AppClient.txtMensagem.setEditable(true);
       client.configurarRede();
+
+      readerWriter.write.println("06069539-50FE-422D-9BDC-336CD4C0F7F8|" + AppClient.txtNome.getText() + "|" + "online");
+      readerWriter.write.flush();
     } catch (ConnectException e) {
       e.printStackTrace();
       JOptionPane.showMessageDialog(null, "Servidor desconectado!!!", "Erro",

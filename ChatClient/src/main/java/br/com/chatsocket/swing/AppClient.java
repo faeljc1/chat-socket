@@ -1,7 +1,9 @@
-package br.com.redes2.swing;
+package br.com.chatsocket.swing;
 
-import br.com.redes2.actions.ActionConect;
-import br.com.redes2.actions.ActionSend;
+import br.com.chatsocket.actions.ActionCloseWindow;
+import br.com.chatsocket.actions.ActionConect;
+import br.com.chatsocket.actions.ActionEnter;
+import br.com.chatsocket.actions.ActionSend;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,6 +57,7 @@ public class AppClient extends JFrame {
 
     txtNome = new JTextField();
     txtNome.setBounds(52, 7, 532, 20);
+    txtNome.addActionListener(new ActionEnter("conectar"));
     painelNome.add(txtNome);
     txtNome.setColumns(10);
 
@@ -79,15 +82,20 @@ public class AppClient extends JFrame {
     btnEnviar.setBounds(388, 488, 89, 20);
     btnEnviar.addActionListener(new ActionSend());
     panelConversa.add(btnEnviar);
+    btnEnviar.setEnabled(false);
 
     txtMensagem = new JTextField();
     txtMensagem.setBounds(13, 488, 365, 20);
+    txtMensagem.addActionListener(new ActionEnter("enviar"));
     panelConversa.add(txtMensagem);
     txtMensagem.setColumns(10);
+    txtMensagem.setEditable(false);
 
     panelContatos = new JPanel();
     panelContatos.setBounds(10, 32, 192, 529);
     getContentPane().add(panelContatos);
     panelContatos.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+    addWindowListener(new ActionCloseWindow());
   }
 }

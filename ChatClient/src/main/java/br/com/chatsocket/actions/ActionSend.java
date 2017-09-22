@@ -1,7 +1,7 @@
-package br.com.redes2.actions;
+package br.com.chatsocket.actions;
 
-import br.com.redes2.sockets.ReaderWriter;
-import br.com.redes2.swing.AppClient;
+import br.com.chatsocket.sockets.ReaderWriter;
+import br.com.chatsocket.swing.AppClient;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
