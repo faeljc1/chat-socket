@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ServerChat {
-  List<PrintWriter> escritores = new ArrayList<PrintWriter>();
-  StringBuilder usuarios = new StringBuilder();
+  private List<PrintWriter> escritores = new ArrayList<PrintWriter>();
+  private StringBuilder usuarios = new StringBuilder();
+  private Map<String, String> usres = new HashMap<String, String>();
 
   public ServerChat() {
     ServerSocket server;
@@ -26,18 +25,14 @@ public class ServerChat {
   }
 
   private void encaminharParaTodos(String texto) {
-    if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8") && texto.contains("online")) {
-      if (usuarios.length() == 0) {
-        usuarios.append(texto);
-      } else {
-        usuarios.append("*" + texto);
-      }
-    } else if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8") && texto.contains("offline")) {
-
+    if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
+      String[] msg = texto.split("\\|");
+      usres.put(msg[1], texto);
     }
+    preencheStringUsers();
     for (PrintWriter w : escritores) {
       try {
-        if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8") || texto.contains("9E1CB7FF-D266-430E-AEBF-BF13384B8935")) {
+        if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
           w.println(usuarios.toString());
         } else {
           w.println(texto);
@@ -68,6 +63,17 @@ public class ServerChat {
           encaminharParaTodos(texto);
         }
       } catch (Exception e) {
+      }
+    }
+  }
+
+  private void preencheStringUsers() {
+    usuarios = new StringBuilder();
+    for (String key : usres.keySet()) {
+      if (usuarios.length() == 0) {
+        usuarios.append(usres.get(key));
+      }else {
+        usuarios.append("*" + usres.get(key));
       }
     }
   }

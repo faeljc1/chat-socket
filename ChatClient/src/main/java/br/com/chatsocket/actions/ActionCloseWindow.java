@@ -13,8 +13,13 @@ public class ActionCloseWindow implements WindowListener {
   }
 
   public void windowClosing(WindowEvent e) {
-    readerWriter.write.println("06069539-50FE-422D-9BDC-336CD4C0F7F8|" + AppClient.txtNome.getText() + "|" + "offline");
-    readerWriter.write.flush();
+    try {
+      readerWriter.write.println("06069539-50FE-422D-9BDC-336CD4C0F7F8|" + AppClient.txtNome.getText() + "|" + "offline");
+      readerWriter.write.flush();
+    }catch (Exception e1) {
+      e1.printStackTrace();
+      System.exit(0);
+    }
   }
 
   public void windowClosed(WindowEvent e) {

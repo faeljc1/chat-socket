@@ -1,9 +1,6 @@
 package br.com.chatsocket.swing;
 
-import br.com.chatsocket.actions.ActionCloseWindow;
-import br.com.chatsocket.actions.ActionConect;
-import br.com.chatsocket.actions.ActionEnter;
-import br.com.chatsocket.actions.ActionSend;
+import br.com.chatsocket.actions.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,15 +21,15 @@ public class AppClient extends JFrame {
   public static JPanel panelConversa;
   public static JPanel panelContatos;
 
+  public static JComboBox cboxStatus;
+
   public static void main(String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          AppClient frame = new AppClient();
-          frame.setVisible(true);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+    EventQueue.invokeLater(() -> {
+      try {
+        AppClient frame = new AppClient();
+        frame.setVisible(true);
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     });
   }
@@ -56,7 +53,7 @@ public class AppClient extends JFrame {
     painelNome.add(lblNome);
 
     txtNome = new JTextField();
-    txtNome.setBounds(52, 7, 532, 20);
+    txtNome.setBounds(52, 7, 429, 20);
     txtNome.addActionListener(new ActionEnter("conectar"));
     painelNome.add(txtNome);
     txtNome.setColumns(10);
@@ -65,6 +62,12 @@ public class AppClient extends JFrame {
     btnConetar.setBounds(600, 6, 89, 20);
     btnConetar.addActionListener(new ActionConect());
     painelNome.add(btnConetar);
+
+    cboxStatus = new JComboBox();
+    cboxStatus.setModel(new DefaultComboBoxModel(new String[] {"Online", "Ocupado", "Ausente", "Offline"}));
+    cboxStatus.setBounds(491, 7, 99, 20);
+    cboxStatus.addItemListener(new ActionStatus());
+    painelNome.add(cboxStatus);
 
     panelConversa = new JPanel();
     panelConversa.setBounds(212, 32, 487, 529);

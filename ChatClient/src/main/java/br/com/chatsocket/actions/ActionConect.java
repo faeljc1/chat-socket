@@ -14,22 +14,31 @@ public class ActionConect implements ActionListener {
 
   @SuppressWarnings("deprecation")
   public void actionPerformed(ActionEvent arg0) {
-    ClientChat client = new ClientChat("localhost", 5000);
-    try {
-      AppClient.btnConetar.setEnabled(false);
-      AppClient.txtNome.setEditable(false);
-      AppClient.btnEnviar.setEnabled(true);
-      AppClient.txtMensagem.setEditable(true);
-      client.configurarRede();
+    if (!AppClient.txtNome.getText().equals("")) {
+      ClientChat client = new ClientChat("localhost", 5000);
+      try {
+        AppClient.btnConetar.setEnabled(false);
+        AppClient.txtNome.setEditable(false);
+        AppClient.btnEnviar.setEnabled(true);
+        AppClient.txtMensagem.setEditable(true);
+        client.configurarRede();
 
-      readerWriter.write.println("06069539-50FE-422D-9BDC-336CD4C0F7F8|" + AppClient.txtNome.getText() + "|" + "online");
-      readerWriter.write.flush();
-    } catch (ConnectException e) {
-      e.printStackTrace();
-      JOptionPane.showMessageDialog(null, "Servidor desconectado!!!", "Erro",
+        String status = AppClient.cboxStatus.getSelectedItem().toString().toLowerCase();
+        System.out.println(status);
+
+        readerWriter.write.println("06069539-50FE-422D-9BDC-336CD4C0F7F8|" + AppClient.txtNome.getText() + "|" + status);
+        readerWriter.write.flush();
+      } catch (ConnectException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Servidor desconectado!!!", "Erro",
+            JOptionPane.INFORMATION_MESSAGE);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      JOptionPane.showMessageDialog(null, "Preencha o nome!", "Erro",
           JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception e) {
-      e.printStackTrace();
+      AppClient.txtNome.requestFocus();
     }
   }
 }

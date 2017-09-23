@@ -1,13 +1,14 @@
 package br.com.chatsocket.sockets;
 
 
+import br.com.chatsocket.actions.ActionClickLabel;
 import br.com.chatsocket.models.Users;
 import br.com.chatsocket.swing.AppClient;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ClientChat {
   private ReaderWriter readerWriter = ReaderWriter.getInstance();
@@ -20,6 +21,8 @@ public class ClientChat {
   public ClientChat(String ipAddress, int port) {
     this.ipAddress = ipAddress;
     this.port = port;
+
+
   }
 
   public void configurarRede() throws Exception {
@@ -48,6 +51,24 @@ public class ClientChat {
     }
   }
 
+  private void preencheWindow() {
+    java.util.List<Users> listaValores = new ArrayList<>(listUsers.values());
+    AppClient.panelContatos.removeAll();
+
+    Collections.sort(listaValores, Comparator.comparing(Users::getIdStatus));
+    for (Users u : listaValores) {
+      lblUsers = new JLabel("<html><body>Nome: " + u.getNome() +
+          " Status: " + u.getStatus() + "</body></html>");
+      setCores(u.getStatus());
+
+      lblUsers.addMouseListener(new ActionClickLabel());
+
+      AppClient.panelContatos.add(lblUsers);
+      AppClient.panelContatos.doLayout();
+      AppClient.panelContatos.repaint();
+    }
+  }
+
   private void preencheUsers(String[] users) {
     for (String user : users) {
       String[] params = user.split("\\|");
@@ -56,15 +77,16 @@ public class ClientChat {
     }
   }
 
-  private void preencheWindow() {
-    AppClient.panelContatos.removeAll();
-    for (String key : listUsers.keySet()) {
-      Users u = listUsers.get(key);
-      lblUsers = new JLabel("<html><body>Nome: " + u.getNome() +
-          " Status: " + u.getStatus() + "</body></html>");
-      AppClient.panelContatos.add(lblUsers);
-      AppClient.panelContatos.doLayout();
-      AppClient.panelContatos.repaint();
+  private void setCores(String status) {
+    if (status.equals("online")) {
+      lblUsers.setForeground(new Color(0, 150, 0));
+    } else if (status.equals("ocupado")) {
+      lblUsers.setForeground(new Color(200, 0, 0));
+    } else if (status.equals("ausente")) {
+      lblUsers.setForeground(new Color(200, 150, 0));
+    } else if (status.equals("offline")) {
+      lblUsers.setForeground(new Color(90, 90, 90));
     }
   }
+
 }
