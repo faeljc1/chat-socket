@@ -37,7 +37,7 @@ public class ClientChat {
       try {
         String texto;
         while ((texto = readerWriter.read.nextLine()) != null) {
-          if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
+          if (texto.contains("B614BE0B-68BA-42B1-A591-277BF0FE54A2") || texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
             String[] params = texto.split("\\*");
             preencheUsers(params);
             preencheWindow();

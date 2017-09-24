@@ -1,6 +1,5 @@
 package br.com.chatsocket.actions;
 
-import br.com.chatsocket.sockets.ReaderWriter;
 import br.com.chatsocket.swing.AppClient;
 
 import javax.swing.*;
@@ -8,8 +7,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class ActionClickLabel implements MouseListener {
-  private ReaderWriter readerWriter = ReaderWriter.getInstance();
-
   @Override
   public void mouseClicked(MouseEvent e) {
     AppClient.txtMensagem.setText("");
@@ -20,7 +17,7 @@ public class ActionClickLabel implements MouseListener {
     String[] params = texto.split(" ");
     String nome = params[1];
     if (!params[3].equals("offline") && !nome.equals(AppClient.txtNome.getText())) {
-      AppClient.txtMensagem.setText("{private:" + nome + "} ");
+      AppClient.txtMensagem.setText("{mensagemprivada:" + nome + "} ");
       AppClient.txtMensagem.requestFocus();
     }
   }

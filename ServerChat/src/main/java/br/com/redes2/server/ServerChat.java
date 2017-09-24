@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class ServerChat {
-  private List<PrintWriter> escritores = new ArrayList<PrintWriter>();
-  private StringBuilder usuarios = new StringBuilder();
-  private Map<String, String> usres = new HashMap<String, String>();
+  private StringBuilder usuariosString = new StringBuilder();
+  private Map<String, Usuarios> listaUsuarios = new HashMap<String, Usuarios>();
 
   public ServerChat() {
     ServerSocket server;
@@ -18,39 +19,23 @@ public class ServerChat {
       while (true) {
         Socket socket = server.accept();
         new Thread(new EscutaCliente(socket)).start();
-        escritores.add(new PrintWriter(socket.getOutputStream()));
       }
     } catch (IOException e) {
     }
   }
 
-  private void encaminharParaTodos(String texto) {
-    if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
-      String[] msg = texto.split("\\|");
-      usres.put(msg[1], texto);
-    }
-    preencheStringUsers();
-    for (PrintWriter w : escritores) {
-      try {
-        if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
-          w.println(usuarios.toString());
-        } else {
-          w.println(texto);
-        }
-        w.flush();
-      } catch (Exception e) {
-      }
-    }
-    System.out.println(usuarios.toString());
-  }
-
   private class EscutaCliente implements Runnable {
 
     Scanner leitor;
+    PrintWriter escritor;
+    String enderecoCliente;
 
     public EscutaCliente(Socket socket) {
       try {
+        enderecoCliente = socket.getInetAddress().toString() + ":" + socket.getPort();
+        enderecoCliente = enderecoCliente.replace("/", "");
         leitor = new Scanner(socket.getInputStream());
+        escritor = new PrintWriter(socket.getOutputStream());
       } catch (Exception e) {
       }
     }
@@ -59,23 +44,88 @@ public class ServerChat {
       try {
         String texto;
         while ((texto = leitor.nextLine()) != null) {
-          // System.out.println(texto);
+          addUsuarios(texto);
           encaminharParaTodos(texto);
         }
       } catch (Exception e) {
       }
     }
-  }
 
-  private void preencheStringUsers() {
-    usuarios = new StringBuilder();
-    for (String key : usres.keySet()) {
-      if (usuarios.length() == 0) {
-        usuarios.append(usres.get(key));
-      }else {
-        usuarios.append("*" + usres.get(key));
+    private void addUsuarios(String texto) {
+      if (texto.contains("B614BE0B-68BA-42B1-A591-277BF0FE54A2")) {
+        String[] valores = texto.split("\\|");
+        String nome = valores[1];
+        String status = valores[2];
+        listaUsuarios.put(nome, new Usuarios(nome, status, texto, enderecoCliente, escritor));
       }
     }
+  }
+
+  private void updateUsuarios(String texto) {
+    if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
+      String[] valores = texto.split("\\|");
+      String nome = valores[1];
+      String status = valores[2];
+      Usuarios u = listaUsuarios.get(nome);
+      u.setStatus(status);
+      u.setMensagem(texto);
+    }
+  }
+
+  private void encaminharParaTodos(String texto) {
+    if (texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
+      updateUsuarios(texto);
+    }
+    preencheStringUsuarios();
+    for (String key : listaUsuarios.keySet()) {
+      Usuarios u = listaUsuarios.get(key);
+      PrintWriter w = u.getEscritor();
+      try {
+        if (texto.contains("B614BE0B-68BA-42B1-A591-277BF0FE54A2") || texto.contains("06069539-50FE-422D-9BDC-336CD4C0F7F8")) {
+          w.println(usuariosString.toString());
+        } else if (texto.contains("41B900D9-10CA-425A-A8D4-4F7E7982AA1E")) {
+          String valores[] = texto.split("\\|");
+          String remet = getRemetente(valores);
+          String dest = getDestinatario(valores);
+          if (u.getNome().equals(remet) || u.getNome().equals(dest)) {
+            String mensagem = getMensagemPrivada(valores);
+            w.println(mensagem);
+          }
+        } else {
+          w.println(texto);
+        }
+        w.flush();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    System.out.println(usuariosString.toString());
+  }
+
+  private void preencheStringUsuarios() {
+    usuariosString = new StringBuilder();
+    for (String key : listaUsuarios.keySet()) {
+      Usuarios u = listaUsuarios.get(key);
+      if (usuariosString.length() == 0) {
+        usuariosString.append(u.getMensagem());
+      } else {
+        usuariosString.append("*" + u.getMensagem());
+      }
+    }
+  }
+
+  private String getDestinatario(String[] valores) {
+    return valores[2];
+  }
+
+  private String getRemetente(String[] valores) {
+    String texto = valores[1];
+    valores = texto.split(":");
+    return valores[0];
+  }
+
+  private String getMensagemPrivada(String[] valores) {
+    return "MENSAGEM PRIVADA - " + valores[1];
   }
 
   public static void main(String[] args) {

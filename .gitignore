@@ -1,6 +1,3 @@
-ChatClient/.idea/
-ChatClient/target/
-ChatClient.iml
-ServerChat/.idea
-ServerChat/target/
-ServerChat.iml
+.idea/
+Chat.iml
+target/

@@ -26,7 +26,7 @@ public class ActionConect implements ActionListener {
         String status = AppClient.cboxStatus.getSelectedItem().toString().toLowerCase();
         System.out.println(status);
 
-        readerWriter.write.println("06069539-50FE-422D-9BDC-336CD4C0F7F8|" + AppClient.txtNome.getText() + "|" + status);
+        readerWriter.write.println("B614BE0B-68BA-42B1-A591-277BF0FE54A2|" + AppClient.txtNome.getText() + "|" + status);
         readerWriter.write.flush();
       } catch (ConnectException e) {
         e.printStackTrace();
