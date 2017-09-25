@@ -1,12 +1,13 @@
 package br.com.chatsocket.sockets;
 
-
 import br.com.chatsocket.actions.ActionClickLabel;
+import br.com.chatsocket.actions.ActionCloseWindow;
 import br.com.chatsocket.models.Users;
 import br.com.chatsocket.swing.AppClient;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.net.Socket;
 import java.util.*;
 
@@ -14,15 +15,13 @@ public class ClientChat {
   private ReaderWriter readerWriter = ReaderWriter.getInstance();
   private String ipAddress;
   private int port;
-  private Map<String, Users> listUsers = new HashMap<String, Users>();
+  private Map<String, Users> listUsers = new HashMap<>();
 
   private JLabel lblUsers;
 
   public ClientChat(String ipAddress, int port) {
     this.ipAddress = ipAddress;
     this.port = port;
-
-
   }
 
   public void configurarRede() throws Exception {
@@ -32,7 +31,6 @@ public class ClientChat {
   }
 
   private class EscutaServidor implements Runnable {
-
     public void run() {
       try {
         String texto;
@@ -41,6 +39,10 @@ public class ClientChat {
             String[] params = texto.split("\\*");
             preencheUsers(params);
             preencheWindow();
+          } else if (texto.contains("E55A3492-5037-4807-B3EE-4D1686A4FB63")) {
+            readerWriter.write.println("06069539-50FE-422D-9BDC-336CD4C0F7F8|" + AppClient.txtNome.getText() + "|" + "offline");
+            readerWriter.write.flush();
+            System.exit(0);
           } else {
             AppClient.txtConversa.setText(AppClient.txtConversa.getText() + texto + "\n");
           }
@@ -88,5 +90,4 @@ public class ClientChat {
       lblUsers.setForeground(new Color(90, 90, 90));
     }
   }
-
 }

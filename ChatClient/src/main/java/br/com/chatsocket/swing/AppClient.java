@@ -101,4 +101,8 @@ public class AppClient extends JFrame {
 
     addWindowListener(new ActionCloseWindow());
   }
+
+  public static void fechar() {
+    System.exit(0);
+  }
 }
