@@ -1,9 +1,15 @@
 package br.com.chatsocket.swing;
 
 import br.com.chatsocket.actions.*;
+import br.com.chatsocket.sockets.ClientChat;
+import br.com.chatsocket.sockets.ReaderWriter;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.awt.*;
+import java.net.ConnectException;
+import java.util.Base64;
 
 public class AppClient extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -22,6 +28,9 @@ public class AppClient extends JFrame {
   public static JPanel panelContatos;
 
   public static JComboBox cboxStatus;
+
+  private static KeyGenerator keygenerator;
+  public static SecretKey chaveDes;
 
   public static void main(String[] args) {
     EventQueue.invokeLater(() -> {
@@ -64,7 +73,7 @@ public class AppClient extends JFrame {
     painelNome.add(btnConetar);
 
     cboxStatus = new JComboBox();
-    cboxStatus.setModel(new DefaultComboBoxModel(new String[] {"Online", "Ocupado", "Ausente", "Offline"}));
+    cboxStatus.setModel(new DefaultComboBoxModel(new String[]{"Online", "Ocupado", "Ausente", "Offline"}));
     cboxStatus.setBounds(491, 7, 99, 20);
     cboxStatus.addItemListener(new ActionStatus());
     painelNome.add(cboxStatus);
@@ -100,6 +109,24 @@ public class AppClient extends JFrame {
     panelContatos.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
     addWindowListener(new ActionCloseWindow());
+
+    try {
+      keygenerator = KeyGenerator.getInstance("DES");
+      chaveDes = keygenerator.generateKey();
+      /*String chaveString = Base64.getEncoder().encodeToString(chaveDes.getEncoded());
+
+      ClientChat client = new ClientChat("localhost", 5000);
+      client.configurarRede();
+      ReaderWriter readerWriter = ReaderWriter.getInstance();
+      readerWriter.write.println("776DB910-A8CB-4814-A025-57479060F33E|" + chaveString);
+      readerWriter.write.flush();
+    } catch (ConnectException e) {
+      e.printStackTrace();
+      JOptionPane.showMessageDialog(getContentPane(), "Servidor desconectado!!!", "Erro",
+          JOptionPane.INFORMATION_MESSAGE);*/
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public static void fechar() {

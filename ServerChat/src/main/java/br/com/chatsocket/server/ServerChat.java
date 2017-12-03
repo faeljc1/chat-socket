@@ -1,12 +1,15 @@
 package br.com.chatsocket.server;
 
+import br.com.chatsocket.criptografy.DES;
 import br.com.chatsocket.models.ListaTabela;
 import br.com.chatsocket.models.Usuarios;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Base64;
 import java.util.Scanner;
 
 public class ServerChat {
@@ -29,6 +32,7 @@ public class ServerChat {
     Scanner leitor;
     PrintWriter escritor;
     String enderecoCliente;
+    DES des;
 
     public EscutaCliente(Socket socket) {
       try {
@@ -36,6 +40,7 @@ public class ServerChat {
         enderecoCliente = enderecoCliente.replace("/", "");
         leitor = new Scanner(socket.getInputStream());
         escritor = new PrintWriter(socket.getOutputStream());
+        des = new DES();
       } catch (Exception e) {
       }
     }
@@ -56,7 +61,9 @@ public class ServerChat {
         String[] valores = texto.split("\\|");
         String nome = valores[1];
         String status = valores[2];
-        listaTabela.listaUsuarios.put(nome, new Usuarios(nome, status, texto, enderecoCliente, escritor));
+        String chaveString = valores[3];
+        SecretKey key = des.convertStringToKey(chaveString);
+        listaTabela.listaUsuarios.put(nome, new Usuarios(nome, status, texto, enderecoCliente, escritor, key));
       }
     }
   }
@@ -93,7 +100,7 @@ public class ServerChat {
             w.println(mensagem);
           }
         } else {
-          w.println(texto);
+            w.println(texto);
         }
         w.flush();
       } catch (Exception e) {

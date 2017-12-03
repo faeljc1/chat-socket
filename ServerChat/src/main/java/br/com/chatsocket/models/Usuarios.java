@@ -1,5 +1,6 @@
 package br.com.chatsocket.models;
 
+import javax.crypto.SecretKey;
 import java.io.PrintWriter;
 
 public class Usuarios {
@@ -8,16 +9,18 @@ public class Usuarios {
   private String mensagem;
   private String enderecoCliente;
   private PrintWriter escritor;
+  private SecretKey chave;
 
   public Usuarios() {
   }
 
-  public Usuarios(String nome, String status, String mensagem, String enderecoCliente, PrintWriter escritor) {
+  public Usuarios(String nome, String status, String mensagem, String enderecoCliente, PrintWriter escritor, SecretKey chave) {
     this.nome = nome;
     this.status = status;
     this.mensagem = mensagem;
     this.enderecoCliente = enderecoCliente;
     this.escritor = escritor;
+    this.chave = chave;
   }
 
   public String getNome() {
@@ -58,5 +61,13 @@ public class Usuarios {
 
   public void setEnderecoCliente(String enderecoCliente) {
     this.enderecoCliente = enderecoCliente;
+  }
+
+  public SecretKey getChave() {
+    return chave;
+  }
+
+  public void setChave(SecretKey chave) {
+    this.chave = chave;
   }
 }

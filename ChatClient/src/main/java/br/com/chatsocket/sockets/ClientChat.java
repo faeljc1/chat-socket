@@ -1,13 +1,13 @@
 package br.com.chatsocket.sockets;
 
 import br.com.chatsocket.actions.ActionClickLabel;
-import br.com.chatsocket.actions.ActionCloseWindow;
+import br.com.chatsocket.criptografy.DES;
 import br.com.chatsocket.models.Users;
 import br.com.chatsocket.swing.AppClient;
 
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowEvent;
 import java.net.Socket;
 import java.util.*;
 
@@ -16,12 +16,14 @@ public class ClientChat {
   private String ipAddress;
   private int port;
   private Map<String, Users> listUsers = new HashMap<>();
+  private DES des;
 
   private JLabel lblUsers;
 
   public ClientChat(String ipAddress, int port) {
     this.ipAddress = ipAddress;
     this.port = port;
+    des = new DES();
   }
 
   public void configurarRede() throws Exception {
@@ -44,6 +46,17 @@ public class ClientChat {
             readerWriter.write.flush();
             System.exit(0);
           } else {
+            String aux = texto.replaceAll(":: ", ": ");
+            String[] params = aux.split(": ");
+            SecretKey chave = null;
+            for (String key : listUsers.keySet()) {
+              Users u = listUsers.get(key);
+              String nome = u.getNome();
+              if (nome.equals(params[0])) {
+                chave = u.getChave();
+              }
+            }
+            texto = params[0] + ": " + des.decrypt(params[1], chave);
             AppClient.txtConversa.setText(AppClient.txtConversa.getText() + texto + "\n");
           }
         }
@@ -74,7 +87,13 @@ public class ClientChat {
   private void preencheUsers(String[] users) {
     for (String user : users) {
       String[] params = user.split("\\|");
-      Users u = new Users(params[1], params[2]);
+      SecretKey chave;
+      if (params[0].equals("B614BE0B-68BA-42B1-A591-277BF0FE54A2")) {
+        chave = des.convertStringToKey(params[3]);
+      } else {
+        chave = listUsers.get(params[1]).getChave();
+      }
+      Users u = new Users(params[1], params[2], chave);
       listUsers.put(params[1], u);
     }
   }
