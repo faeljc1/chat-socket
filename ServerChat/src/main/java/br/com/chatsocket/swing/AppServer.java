@@ -6,6 +6,7 @@ import br.com.chatsocket.server.ServerChat;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.security.*;
 
 public class AppServer extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -17,6 +18,11 @@ public class AppServer extends JFrame {
   public static JPanel painelImportacao;
 
   public static JLabel lblUsuarios;
+
+  private static KeyPairGenerator keyGen;
+  private static KeyPair pair;
+  public static PrivateKey privateKey;
+  public static PublicKey publicKey;
 
   public static DefaultTableModel modelo = new DefaultTableModel();
 
@@ -66,6 +72,16 @@ public class AppServer extends JFrame {
     lblUsuarios.setFont(new Font("Tahoma", Font.PLAIN, 18));
     lblUsuarios.setBounds(10, 11, 418, 46);
     painelImportacao.add(lblUsuarios);
+
+    try {
+      this.keyGen = KeyPairGenerator.getInstance("RSA");
+      this.keyGen.initialize(2048);
+      this.pair = this.keyGen.generateKeyPair();
+      this.privateKey = this.pair.getPrivate();
+      this.publicKey = this.pair.getPublic();
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
 
     new Thread(new ExecutaServer()).start();
   }
