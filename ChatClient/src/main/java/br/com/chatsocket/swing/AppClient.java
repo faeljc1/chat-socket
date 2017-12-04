@@ -1,15 +1,15 @@
 package br.com.chatsocket.swing;
 
 import br.com.chatsocket.actions.*;
-import br.com.chatsocket.sockets.ClientChat;
-import br.com.chatsocket.sockets.ReaderWriter;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.awt.*;
-import java.net.ConnectException;
-import java.util.Base64;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 public class AppClient extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -28,6 +28,11 @@ public class AppClient extends JFrame {
   public static JPanel panelContatos;
 
   public static JComboBox cboxStatus;
+
+  private static KeyPairGenerator keyGen;
+  private static KeyPair pair;
+  public static PrivateKey privateKey;
+  public static PublicKey publicKey;
 
   private static KeyGenerator keygenerator;
   public static SecretKey chaveDes;
@@ -111,8 +116,14 @@ public class AppClient extends JFrame {
     addWindowListener(new ActionCloseWindow());
 
     try {
-      keygenerator = KeyGenerator.getInstance("DES");
-      chaveDes = keygenerator.generateKey();
+      this.keyGen = KeyPairGenerator.getInstance("RSA");
+      this.keyGen.initialize(2048);
+      this.pair = this.keyGen.generateKeyPair();
+      this.privateKey = this.pair.getPrivate();
+      this.publicKey = this.pair.getPublic();
+
+      this.keygenerator = KeyGenerator.getInstance("DES");
+      this.chaveDes = this.keygenerator.generateKey();
       /*String chaveString = Base64.getEncoder().encodeToString(chaveDes.getEncoded());
 
       ClientChat client = new ClientChat("localhost", 5000);
