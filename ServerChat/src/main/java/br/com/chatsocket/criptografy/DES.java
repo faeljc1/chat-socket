@@ -23,7 +23,7 @@ public class DES {
     return new SecretKeySpec(decodedKey, 0, decodedKey.length, "DES");
   }
 
-  /*public byte[] encrypt(byte[] text, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+  public byte[] encrypt(byte[] text, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
     Cipher desCipher1 = Cipher.getInstance("DES/ECB/PKCS5Padding");
     desCipher1.init(Cipher.ENCRYPT_MODE, key);
     return desCipher1.doFinal(text);
@@ -33,7 +33,7 @@ public class DES {
     Cipher desCipher2 = Cipher.getInstance("DES/ECB/PKCS5Padding");
     desCipher2.init(Cipher.DECRYPT_MODE, key);
     return desCipher2.doFinal(text);
-  }*/
+  }
 
   public String encrypt(String text, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
     Cipher desCipher1 = Cipher.getInstance("DES/ECB/PKCS5Padding");
@@ -47,7 +47,7 @@ public class DES {
     Cipher desCipher2 = Cipher.getInstance("DES/ECB/PKCS5Padding");
     desCipher2.init(Cipher.DECRYPT_MODE, key);
     byte[] decordedValue = new BASE64Decoder().decodeBuffer(text);
-    byte[] decValue = desCipher2.doFinal(decordedValue);//////////LINE 50
+    byte[] decValue = desCipher2.doFinal(decordedValue);
     String decryptedValue = new String(decValue);
     return decryptedValue;
   }
